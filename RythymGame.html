@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhythm Game</title>
+    <style>
+        /* Import "Luckiest Guy" font from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #111827, #1F2937);
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        .target-circle {
+            width: 100px;
+            height: 100px;
+            border: 4px solid #10B981;
+            border-radius: 50%;
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(16, 185, 129, 1);
+            }
+        }
+
+        .perfect-zone {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(16, 185, 129, 0.3);
+            border-radius: 50%;
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .good-zone {
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255, 255, 0, 0.3);
+            border-radius: 50%;
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .close-zone {
+            width: 400px;
+            height: 400px;
+            border: 2px solid rgba(255, 165, 0, 0.3);
+            border-radius: 50%;
+            position: absolute;
+            left: 20%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .ball {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #3B82F6, #1E40AF);
+            border-radius: 50%;
+            position: absolute;
+            right: -50px;
+            bottom: 0;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+            animation: moveBall 4s linear infinite, bounceBall 2s ease-in-out infinite;
+        }
+
+        @keyframes moveBall {
+            0% {
+                right: -50px;
+            }
+            100% {
+                right: 100%;
+            }
+        }
+
+        @keyframes bounceBall {
+            0%, 100% {
+                bottom: 0;
+                animation-timing-function: ease-out;
+            }
+            50% {
+                bottom: calc(50% - 0px);
+                animation-timing-function: ease-in;
+            }
+        }
+
+        .message {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: white;
+            pointer-events: none;
+            animation: pop 0.5s ease-out;
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .instructions {
+            position: absolute;
+            top: 20px;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        .score-display {
+            position: absolute;
+            top: 60px;
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        .combo {
+            position: absolute;
+            top: 100px;
+            font-size: 24px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: comboPop 0.5s ease-out;
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        @keyframes comboPop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .points-popup {
+            position: absolute;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Luckiest Guy', cursive;
+            animation: fadeUp 1s ease-out forwards;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+
+        .pause-screen {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 48px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Luckiest Guy', cursive;
+        }
+
+        .particle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            position: absolute;
+            background-color: white;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">Press SPACEBAR when the ball passes through the circle! Press P to pause.</div>
+    <div class="score-display">Score: <span id="score">0</span></div>
+    <div class="combo">Combo: <span id="combo">0</span></div>
+    <div class="close-zone"></div>
+    <div class="good-zone"></div>
+    <div class="perfect-zone"></div>
+    <div class="target-circle"></div>
+    <div id="message" class="message"></div>
+    <div id="pause-screen" class="pause-screen">Game Paused<br>Your Score: <span id="final-score">0</span></div>
+
+    <script>
+        const message = document.getElementById('message');
+        const targetCircle = document.querySelector('.target-circle');
+        const scoreElement = document.getElementById('score');
+        const comboElement = document.getElementById('combo');
+        const pauseScreen = document.getElementById('pause-screen');
+        const finalScoreElement = document.getElementById('final-score');
+        
+        let score = 0;
+        let combo = 0;
+        let isPaused = false;
+
+        // Ball pool system
+        const maxBalls = 3;
+        const ballPool = [];
+
+        // Spawn interval pattern (in milliseconds)
+        const spawnIntervalPattern = [1000, 1500, 2000, 2500, 3000];
+        let patternIndex = 0;
+
+        function createBall() {
+            const ball = document.createElement('div');
+            ball.className = 'ball';
+            document.body.appendChild(ball);
+
+            const moveDelay = Math.random() * 2;
+            const bounceDelay = Math.random() * 1;
+            ball.style.animationDelay = `${moveDelay}s, ${bounceDelay}s`;
+
+            ball.addEventListener('animationend', (event) => {
+                if (event.animationName === 'moveBall') {
+                    ball.remove();
+                    ballPool.push(ball);
+                }
+            });
+
+            return ball;
+        }
+
+        function spawnBall() {
+            if (!isPaused && document.querySelectorAll('.ball').length < maxBalls) {
+                let ball;
+                if (ballPool.length > 0) {
+                    ball = ballPool.pop();
+                    document.body.appendChild(ball);
+                } else {
+                    ball = createBall();
+                }
+
+                ball.style.right = '-50px';
+                ball.style.bottom = '0';
+                ball.style.animation = 'moveBall 4s linear infinite, bounceBall 2s ease-in-out infinite';
+            }
+
+            const nextInterval = spawnIntervalPattern[patternIndex % spawnIntervalPattern.length];
+            patternIndex++;
+            setTimeout(spawnBall, nextInterval);
+        }
+
+        spawnBall();
+
+        function createParticles(x, y) {
+            const particleCount = 30;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                particle.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        function createPointsPopup(points, x, y, color) {
+            const popup = document.createElement('div');
+            popup.className = 'points-popup';
+            popup.textContent = `+${points}`;
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+            popup.style.color = color;
+            document.body.appendChild(popup);
+
+            setTimeout(() => popup.remove(), 1000);
+        }
+
+        function updateScore(points, accuracy, x, y) {
+            if (accuracy === "perfect") {
+                combo++;
+                points *= combo;
+            } else {
+                combo = 0;
+            }
+
+            score += points;
+            scoreElement.textContent = score;
+            finalScoreElement.textContent = score;
+            comboElement.textContent = combo;
+
+            createPointsPopup(points, x, y, {
+                perfect: "#00ff00",
+                good: "#ffff00",
+                close: "#ffa500",
+                miss: "#ff0000"
+            }[accuracy]);
+
+            createParticles(x, y);
+        }
+
+        function checkBallPosition(ball) {
+            const ballRect = ball.getBoundingClientRect();
+            const targetRect = targetCircle.getBoundingClientRect();
+            
+            const ballCenter = {
+                x: ballRect.left + (ballRect.width / 2),
+                y: ballRect.top + (ballRect.height / 2)
+            };
+            
+            const targetCenter = {
+                x: targetRect.left + (targetRect.width / 2),
+                y: targetRect.top + (targetRect.height / 2)
+            };
+            
+            const distance = Math.sqrt(
+                Math.pow(ballCenter.x - targetCenter.x, 2) +
+                Math.pow(ballCenter.y - targetCenter.y, 2)
+            );
+            
+            if (distance < 25) {
+                message.textContent = `★ PERFECT! ★ ${combo > 1 ? 'x' + combo + ' COMBO!' : ''}`;
+                message.style.color = "#00ff00";
+                updateScore(100, "perfect", ballCenter.x, ballCenter.y);
+                ball.remove();
+                return "perfect";
+            } else if (distance < 100) {
+                message.textContent = "Great!";
+                message.style.color = "#ffff00";
+                updateScore(50, "good", ballCenter.x, ballCenter.y);
+                ball.remove();
+                return "good";
+            } else if (distance < 200) {
+                message.textContent = "Close!";
+                message.style.color = "#ffa500";
+                updateScore(25, "close", ballCenter.x, ballCenter.y);
+                ball.remove();
+                return "close";
+            }
+            return null;
+        }
+
+        function pauseGame() {
+            isPaused = true;
+            document.querySelectorAll('.ball').forEach(ball => {
+                ball.style.animationPlayState = "paused";
+            });
+            finalScoreElement.textContent = score;
+            pauseScreen.style.display = "block";
+        }
+
+        function resumeGame() {
+            isPaused = false;
+            document.querySelectorAll('.ball').forEach(ball => {
+                ball.style.animationPlayState = "running";
+            });
+            pauseScreen.style.display = "none";
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' && !isPaused) {
+                event.preventDefault();
+                
+                const balls = Array.from(document.querySelectorAll('.ball'));
+                balls.sort((a, b) => {
+                    const rectA = a.getBoundingClientRect();
+                    const rectB = b.getBoundingClientRect();
+                    return Math.abs(rectA.left - targetCircle.getBoundingClientRect().left) - 
+                           Math.abs(rectB.left - targetCircle.getBoundingClientRect().left);
+                });
+
+                let hitRegistered = false;
+                for (const ball of balls) {
+                    const accuracy = checkBallPosition(ball);
+                    if (accuracy) {
+                        hitRegistered = true;
+                        ball.style.boxShadow = {
+                            perfect: "0 0 20px #00ff00",
+                            good: "0 0 20px #ffff00",
+                            close: "0 0 20px #ffa500"
+                        }[accuracy];
+                        break;
+                    }
+                }
+
+                message.style.transform = "scale(1.2)";
+                setTimeout(() => {
+                    message.style.transform = "scale(1)";
+                }, 100);
+            } else if (event.code === 'KeyP') {
+                if (isPaused) {
+                    resumeGame();
+                } else {
+                    pauseGame();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
