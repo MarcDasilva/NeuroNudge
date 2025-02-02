@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythm Game Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* General body styling */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #1a1a1a;
+      font-family: 'Arial', sans-serif;
+      color: white;
+    }
+
+    /* Big title styling */
+    .title {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: #00aaff;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Bounce animation for each letter */
+    .title span {
+      display: inline-block;
+      animation: bounce 1.5s infinite ease-in-out;
+    }
+
+    /* Delay each letter's animation */
+    .title span:nth-child(1) { animation-delay: 0.1s; }
+    .title span:nth-child(2) { animation-delay: 0.2s; }
+    .title span:nth-child(3) { animation-delay: 0.3s; }
+    .title span:nth-child(4) { animation-delay: 0.4s; }
+    .title span:nth-child(5) { animation-delay: 0.5s; }
+    .title span:nth-child(6) { animation-delay: 0.6s; }
+    .title span:nth-child(7) { animation-delay: 0.7s; }
+    .title span:nth-child(8) { animation-delay: 0.8s; }
+    .title span:nth-child(9) { animation-delay: 0.9s; }
+    .title span:nth-child(10) { animation-delay: 1.0s; }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* Container for the menu */
+    .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 300px;
+    }
+
+    /* Button styling */
+    .menu-button {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      text-align: center;
+      background-color: #333;
+      color: white;
+      border: 3px solid #00aaff; /* Blue border */
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Hover effect for buttons */
+    .menu-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background: radial-gradient(circle, rgba(0, 170, 255, 0.3), rgba(0, 170, 255, 0));
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.5s ease;
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .menu-button:hover::before {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .menu-button:hover {
+      background-color: #444;
+      border-color: #00aaff;
+      color: #00aaff;
+      transform: scale(1.05);
+    }
+
+    /* Active effect for buttons */
+    .menu-button:active {
+      transform: scale(0.95);
+    }
+
+    /* Text inside buttons */
+    .menu-button span {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">
+    <span>N</span>
+    <span>E</span>
+    <span>U</span>
+    <span>R</span>
+    <span>O</span>  
+    <span> </span>
+    <span>N</span>
+    <span>U</span>
+    <span>D</span>
+    <span>G</span>
+    <span>E</span>
+  </div>
+  <div class="menu">
+    <!-- Start button that redirects to the main React app -->
+    <button class="menu-button" onclick="window.location.href='/index.html'"><span>Start</span></button>
+    <!-- Other menu buttons (can be replaced with actual URLs or pages later) -->
+    <button class="menu-button" onclick="window.location.href='info.html'"><span>Info</span></button>
+    <button class="menu-button" onclick="window.location.href='about.html'"><span>About Us</span></button>
+  </div>
+</body>
+</html>
