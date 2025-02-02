@@ -210,6 +210,20 @@
             font-family: 'Luckiest Guy', cursive;
         }
 
+        .pause-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-image: url('pause-logo.png'); /* Image in the same folder as HTML */
+            background-size: cover;
+            background-repeat: no-repeat;
+            border: none;
+            cursor: pointer;
+            z-index: 10;
+        }
+
         .particle {
             width: 10px;
             height: 10px;
@@ -232,7 +246,7 @@
     </style>
 </head>
 <body>
-    <div class="instructions">Press SPACEBAR when the ball passes through the circle! Press P to pause.</div>
+    <div class="instructions">Press SPACEBAR when the ball passes through the circle! Press the pause button to pause.</div>
     <div class="score-display">Score: <span id="score">0</span></div>
     <div class="combo">Combo: <span id="combo">0</span></div>
     <div class="close-zone"></div>
@@ -242,6 +256,14 @@
     <div id="message" class="message"></div>
     <div id="pause-screen" class="pause-screen">Game Paused<br>Your Score: <span id="final-score">0</span></div>
 
+    <button class="pause-button" id="pause-btn"></button>
+
+    <!-- Audio element for background music -->
+    <audio id="background-music" loop>
+        <source src="elvis-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
         const message = document.getElementById('message');
         const targetCircle = document.querySelector('.target-circle');
@@ -249,17 +271,22 @@
         const comboElement = document.getElementById('combo');
         const pauseScreen = document.getElementById('pause-screen');
         const finalScoreElement = document.getElementById('final-score');
+        const pauseButton = document.getElementById('pause-btn');
+        const backgroundMusic = document.getElementById('background-music');
         
         let score = 0;
         let combo = 0;
         let isPaused = false;
+
+        // Start the background music when the game starts
+        backgroundMusic.play();
 
         // Ball pool system
         const maxBalls = 3;
         const ballPool = [];
 
         // Spawn interval pattern (in milliseconds)
-        const spawnIntervalPattern = [1000, 1500, 2000, 2500, 3000];
+        const spawnIntervalPattern = [3000];
         let patternIndex = 0;
 
         function createBall() {
@@ -400,6 +427,7 @@
             });
             finalScoreElement.textContent = score;
             pauseScreen.style.display = "block";
+            backgroundMusic.pause(); // Pause the music
         }
 
         function resumeGame() {
@@ -408,7 +436,16 @@
                 ball.style.animationPlayState = "running";
             });
             pauseScreen.style.display = "none";
+            backgroundMusic.play(); // Resume the music
         }
+
+        pauseButton.addEventListener('click', () => {
+            if (isPaused) {
+                resumeGame();
+            } else {
+                pauseGame();
+            }
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.code === 'Space' && !isPaused) {
@@ -424,27 +461,17 @@
 
                 let hitRegistered = false;
                 for (const ball of balls) {
-                    const accuracy = checkBallPosition(ball);
-                    if (accuracy) {
+                    const result = checkBallPosition(ball);
+                    if (result) {
                         hitRegistered = true;
-                        ball.style.boxShadow = {
-                            perfect: "0 0 20px #00ff00",
-                            good: "0 0 20px #ffff00",
-                            close: "0 0 20px #ffa500"
-                        }[accuracy];
                         break;
                     }
                 }
 
-                message.style.transform = "scale(1.2)";
-                setTimeout(() => {
-                    message.style.transform = "scale(1)";
-                }, 100);
-            } else if (event.code === 'KeyP') {
-                if (isPaused) {
-                    resumeGame();
-                } else {
-                    pauseGame();
+                if (!hitRegistered) {
+                    message.textContent = "Miss!";
+                    message.style.color = "#ff0000";
+                    message.style.fontSize = "40px";
                 }
             }
         });
